@@ -71,8 +71,8 @@ class Serializer(object):
                 if type(element) == list:
                     for nr, subelement in enumerate(element):
                         element[nr] = self.escape(subelement)
-                    message += self.characters.component_separator.join(
-                        element)
+                    message += u''.join([self.characters.component_separator if
+                                        x == u'' else x for x in element])
                 else:
                     message += self.escape(element)
 
@@ -85,7 +85,6 @@ class Serializer(object):
 
         :param string the string to be escaped
         """
-
         assert(type(string) == str)
 
         characters = [
