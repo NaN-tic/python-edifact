@@ -96,7 +96,7 @@ class ParserTest(unittest.TestCase):
     def test_basic1(self):
 
         self._assert_segments(u"RFF+PD:50515", [
-            Segment(u"RFF", [u"PD", u"50515"]),
+            Segment(u"RFF", [u"PD", u"", u"50515"]),
         ])
 
     def test_basic2(self):
@@ -108,37 +108,37 @@ class ParserTest(unittest.TestCase):
     def test_escape_character(self):
 
         self._assert_segments(u"ERC+10:The message does not make sense??", [
-            Segment(u"ERC", [u"10", u"The message does not make sense?"]),
+            Segment(u"ERC", [u"10", u"", u"The message does not make sense?"]),
         ])
 
     def test_escape_component_separator(self):
 
         self._assert_segments(u"ERC+10:Name?: Craig", [
-            Segment(u"ERC", [u"10", u"Name: Craig"]),
+            Segment(u"ERC", [u"10", u"", u"Name: Craig"]),
         ])
 
     def test_escape_data_separator(self):
 
         self._assert_segments(u"DTM+735:?+0000:406", [
-            Segment(u"DTM", [u"735", u"+0000", u"406"]),
+            Segment(u"DTM", [u"735", u"", u"+0000", u"", u"406"]),
         ])
 
     def test_escape_decimal_point(self):
 
         self._assert_segments(u"QTY+136:12,235", [
-            Segment(u"QTY", [u"136", u"12,235"]),
+            Segment(u"QTY", [u"136", u"", u"12,235"]),
         ])
 
     def test_escape_segment_terminator(self):
 
         self._assert_segments(u"ERC+10:Craig?'s", [
-            Segment(u"ERC", [u"10", u"Craig's"]),
+            Segment(u"ERC", [u"10", u"", u"Craig's"]),
         ])
 
     def test_escape_sequence(self):
 
         self._assert_segments(u"ERC+10:?:?+???' - ?:?+???' - ?:?+???'", [
-            Segment(u"ERC", [u"10", u":+?' - :+?' - :+?'"]),
+            Segment(u"ERC", [u"10", u"", u":+?' - :+?' - :+?'"]),
         ])
 
 

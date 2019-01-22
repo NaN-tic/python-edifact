@@ -123,7 +123,6 @@ class Parser(object):
         empty_component_counter = 0
 
         for token in tokens:
-
             # If we're in the mid of a segment, check if we've reached the end
             if in_segment:
 
@@ -186,7 +185,7 @@ class Parser(object):
 
             # here we can be sure that the token value is normal "content"
             # first backfill empty strings for skipped component data (:::)
-            for i in range(1, empty_component_counter):
+            for i in range(0, empty_component_counter):
                 data_element.append(u'')
 
             data_element.append(token.value)
