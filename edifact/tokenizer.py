@@ -20,35 +20,7 @@
 ##############################################################################
 from __future__ import absolute_import
 from edifact.token import Token
-
-
-class MemoryIterator(object):
-
-    def __init__(self, iterator):
-        self._iter = iter(iterator)
-        self._prev = []
-        self._next = []
-        self._reversed = False
-
-    def __iter__(self):
-        return self
-
-    def prev(self):
-        self._reversed = True
-        if self._prev:
-            self._next.append(self._prev.pop())
-            return self._prev.pop() if self._prev else None
-        return None
-
-    def next(self):
-        if self._reversed:
-            next_item = self._next.pop(0)
-            if not self._next:
-                self._reversed = False
-        else:
-            next_item = next(self._iter)
-        self._prev.append(next_item)
-        return next_item
+from edifact.utils import RewindIterator, rewind
 
 
 class Tokenizer(object):
@@ -82,7 +54,7 @@ class Tokenizer(object):
         self.characters = characters
         self._char = None
         self._string = u''
-        self._message = MemoryIterator(message)
+        self._message = RewindIterator(message)
         self._message_index = 0
         self.read_next_char()
         tokens = []
@@ -115,7 +87,7 @@ class Tokenizer(object):
                 self.isEscaped = True
                 self._char = next_char
             else:
-                self.get_prev_char()
+                self.rewind_to_previous_char()
 
     def get_next_char(self):
         u"""Get the next character from the message."""
@@ -124,9 +96,9 @@ class Tokenizer(object):
         except StopIteration:
             return
 
-    def get_prev_char(self):
+    def rewind_to_previous_char(self):
         u"""Get the previous character from the message."""
-        return self._message.prev()
+        return rewind(self._message)
 
     def get_next_token(self):
         u"""Get the next token from the message."""

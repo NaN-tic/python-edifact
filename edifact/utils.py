@@ -18,7 +18,33 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
 from __future__ import absolute_import
-from edifact import message, parser, segments, serializer, token, tokenizer, \
-    utils
+
+
+def rewind(rewind_iterator):
+    rewind_iterator.rewind()
+
+
+class RewindIterator(object):
+
+    def __init__(self, collection):
+        self._iter = iter(collection)
+        self._prev = []
+        self._next = []
+
+    def __iter__(self):
+        return self
+
+    def rewind(self):
+        """Rewinds one position the iterator
+        """
+        if self._prev:
+            self._next.append(self._prev.pop())
+
+    def next(self):
+        next_item = self._next.pop(0) if self._next else next(self._iter)
+        self._prev.append(next_item)
+        return next_item
+
+    def __next__(self):
+        return self.next()
