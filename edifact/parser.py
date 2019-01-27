@@ -122,6 +122,7 @@ class Parser(object):
         in_segment = False
         empty_component_counter = 0
 
+        previous_token = None
         for token in tokens:
             # If we're in the mid of a segment, check if we've reached the end
             if in_segment:
@@ -136,18 +137,23 @@ class Parser(object):
                     current_segment.append(data_element[0])
                     current_segment.append(token.value)
                     data_element = []
+                    previous_token = token
                     continue
 
                 if token.type == Token.Type.TERMINATOR:
                     in_segment = False
                     if len(data_element) == 0:  # empty element
                         data_element = u''
-                    if len(data_element) == 1:
+                    elif len(data_element) == 1:
                         # use a str instead of a list
                         data_element = data_element[0]
-
+                    else:
+                        if previous_token.type == Token.Type.COMPONENT_SEPARATOR:
+                            data_element.append(u'')
                     current_segment.append(data_element)
                     data_element = []
+                    previous_token = token
+                    empty_component_counter = 0
                     continue
 
             # If we're not in a segment, then start a new empty one now
@@ -173,6 +179,7 @@ class Parser(object):
 
                 data_element = []
                 empty_component_counter = 0
+                previous_token = token
                 continue
 
             # Whenever we reach a component data separator (:), we know that
@@ -181,6 +188,7 @@ class Parser(object):
             # separators are in a row "23:::56"
             if token.type == Token.Type.COMPONENT_SEPARATOR:
                 empty_component_counter += 1
+                previous_token = token
                 continue
 
             # here we can be sure that the token value is normal "content"
@@ -190,8 +198,8 @@ class Parser(object):
 
             data_element.append(token.value)
             empty_component_counter = 0
+            previous_token = token
             continue
-
         for segment in segments:
             name = segment.pop(0)
             yield self.factory.create_segment(characters, name, *segment)

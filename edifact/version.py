@@ -19,6 +19,6 @@
 ##############################################################################
 
 PACKAGE = 'edifact'
-VERSION = '0.1.1'
+VERSION = '0.1.2'
 LICENSE = 'LGPLv3+'
 WEBSITE = 'http://www.NaN-tic.com/'
