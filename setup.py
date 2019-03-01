@@ -40,6 +40,9 @@ setup(
     package_data={
         'tests': ['data/*'],
         },
+    install_requires=[
+        'future',
+        ],
     use_2to3=True,
     license=LICENSE,
     test_suite='tests',
