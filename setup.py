@@ -41,7 +41,8 @@ setup(
         'tests': ['data/*'],
         },
     install_requires=[
-        'future',
+        'enum34;python_version<"3.4"',
+        'future;python_version<"3.4"',
         ],
     use_2to3=True,
     license=LICENSE,
