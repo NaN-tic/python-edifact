@@ -20,12 +20,17 @@
 ##############################################################################
 from setuptools import setup, find_packages
 import os
+import sys
 from edifact.version import VERSION, LICENSE, WEBSITE
 
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+if sys.version_info < (3, 0):
+    install_requires = ['enum34', 'future']
+else:
+    install_requires = []
 
 setup(
     name='edifact',
@@ -40,10 +45,7 @@ setup(
     package_data={
         'tests': ['data/*'],
         },
-    install_requires=[
-        'enum34;python_version<"3.4"',
-        'future;python_version<"3.4"',
-        ],
+    install_requires=install_requires,
     use_2to3=True,
     license=LICENSE,
     test_suite='tests',
