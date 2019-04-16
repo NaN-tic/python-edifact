@@ -38,7 +38,7 @@ class Message(object):
         self.has_una_segment = False
 
     @classmethod
-    def from_file(cls, file, encoding=u'iso8859-1'):
+    def from_file(cls, file, encoding=u'iso8859-1', characters=None):
         u"""Create a Message instance from a file.
 
         Raises FileNotFoundError if filename is not found.
@@ -52,15 +52,15 @@ class Message(object):
 
         with open(file, encoding=encoding) as f:
             message = f.read()
-        return cls.from_str(message)
+        return cls.from_str(message, characters)
 
     @classmethod
-    def from_str(cls, string):
+    def from_str(cls, string, characters=None):
         u"""Create a Message instance from a string.
         :param string: The EDI message content
         :rtype: Message
         """
-        segments = Parser().parse(string)
+        segments = Parser().parse(string, characters)
 
         return cls.from_segments(segments)
 
@@ -118,9 +118,10 @@ class Message(object):
         self.segments.append(segment)
         return self
 
-    def serialize(self):
+    def serialize(self, characters=None):
         u"""Serialize all the segments added to this object."""
-        return Serializer().serialize(self.segments, self.has_una_segment)
+        return Serializer(characters).serialize(
+            self.segments, self.has_una_segment)
 
     def __str__(self):
         u"""Allow the object to be serialized by casting to a string."""

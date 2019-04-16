@@ -58,7 +58,6 @@ class Serializer(object):
             message += self.characters.escape_character
             message += self.characters.reserved_character
             message += self.characters.segment_terminator
-            message += '\n'
 
         # iter through all segments
         for segment in segments:
@@ -77,7 +76,7 @@ class Serializer(object):
                     message += self.escape(element)
 
             message += self.characters.segment_terminator
-            message += '\n'
+
         return message
 
     def escape(self, string):

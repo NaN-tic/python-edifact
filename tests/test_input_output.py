@@ -21,6 +21,7 @@
 from __future__ import with_statement
 from __future__ import absolute_import
 from edifact.message import Message
+from edifact.control import Characters
 import unittest
 import os
 from io import open
@@ -41,13 +42,20 @@ class InputOutputTest(unittest.TestCase):
     def test_patient1(self):
         self._test_file_read(u"{}/patient1.edi".format(self.path))
 
-    def _test_file_read(self, file_name, encoding=u'iso8859-1'):
+    def test_order_with_equal_separators(self):
+        control_chars = Characters()
+        control_chars.data_separator = u'|'
+        control_chars.segment_terminator = '\n'
+        self._test_file_read(u"{}/order_with_custom_characters.edi".format(self.path),
+            characters=control_chars)
+
+    def _test_file_read(self, file_name, encoding=u'iso8859-1', characters=None):
         # read in a complete message from a file
-        message = Message.from_file(file_name)
-        output = message.serialize()
+        message = Message.from_file(file_name, characters=characters)
+        output = message.serialize(characters)
         with open(file_name, encoding=encoding) as fp:
             expected = fp.read()
-        self.assertEqual(expected, output)
+        self.assertEqual(expected, output + '\n')
 
 
 if __name__ == u'__main__':
