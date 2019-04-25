@@ -46,7 +46,7 @@ copyright = u'2011-2018, NaN·tic'
 # built documents.
 #
 # The short X.Y version.
-from ..edifact.version import VERSION
+from ..version import VERSION
 version = VERSION
 # The full version, including alpha/beta/rc tags.
 release = VERSION

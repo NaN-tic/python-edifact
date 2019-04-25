@@ -21,16 +21,17 @@
 from setuptools import setup, find_packages
 import os
 import sys
-from edifact.version import VERSION, LICENSE, WEBSITE
+from version import VERSION, LICENSE, WEBSITE
 
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+
 if sys.version_info < (3, 0):
-    install_requires = ['enum34', 'future']
+    install_requires = ['decorator', 'enum34', 'future']
 else:
-    install_requires = []
+    install_requires = ['decorator']
 
 setup(
     name='edifact',
@@ -41,11 +42,11 @@ setup(
     long_description=read('README'),
     url=WEBSITE,
     download_url='https://bitbucket.org/nantic/python-edifact/',
-    packages=find_packages(),
     package_data={
         'tests': ['data/*'],
         },
     install_requires=install_requires,
+    packages=find_packages(),
     use_2to3=True,
     license=LICENSE,
     test_suite='tests',
