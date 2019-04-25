@@ -19,6 +19,14 @@
 #
 ##############################################################################
 
-from __future__ import absolute_import
-from edifact import (message, parser, segments, serializer, token, tokenizer,
-    utils, errors)
+
+class EdiError(Exception):
+    pass
+
+
+class MissingFieldsError(EdiError):
+    pass
+
+
+class IncorrectValueForField(EdiError):
+    pass

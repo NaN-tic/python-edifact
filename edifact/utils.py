@@ -19,6 +19,12 @@
 #
 ##############################################################################
 from __future__ import absolute_import
+from edifact.errors import MissingFieldsError, IncorrectValueForField
+from edifact.serializer import Serializer
+from decorator import decorator
+
+NO_ERRORS = None
+DO_NOTHING = None
 
 
 def rewind(rewind_iterator):
@@ -26,9 +32,11 @@ def rewind(rewind_iterator):
 
 
 class RewindIterator(object):
-
+    """
+    Convert a collection or an iterator into a RewindIterator
+    """
     def __init__(self, collection):
-        self._iter = iter(collection)
+        self._iter = iter([item for item in collection])
         self._prev = []
         self._next = []
 
@@ -48,3 +56,80 @@ class RewindIterator(object):
 
     def __next__(self):
         return self.next()
+
+
+def separate_section(iterator, start=None, end=None):
+    """
+    Extracts a section from the rest of the message
+    """
+    if not isinstance(iterator, RewindIterator):
+        raise TypeError('Argument iterator must be a RewindIterator.')
+
+    extracted = []
+    if not start and not end:
+        extracted = [segment for segment in iterator]
+
+    for segment in iterator:
+        if segment.tag == start:
+            if extracted:
+                yield extracted
+            extracted = []
+            extracted.append(segment)
+        elif segment.tag != end:
+            extracted.append(segment)
+        else:
+            yield extracted
+            rewind(iterator)
+            break
+    else:
+        if extracted:
+            yield extracted
+
+
+def validate_segment(elements, template_segment_elements):
+    """
+    Validate the segment elements against the template
+    """
+    if len(template_segment_elements) > len(elements):
+        raise MissingFieldsError
+    for index, item in enumerate(template_segment_elements):
+        if item == u'!ignore':
+            continue
+        elif item == u'!value':
+            if not elements[index]:
+                raise IncorrectValueForField
+        elif isinstance(item, list):
+            # Recursively checks childs
+            validate_segment(elements[index], item)
+        elif isinstance(item, tuple):
+            if elements[index] not in item:
+                raise IncorrectValueForField
+        else:
+            if elements[index] != item:
+                raise IncorrectValueForField
+
+
+@decorator
+def with_segment_check(func, *args):
+    """
+    This decorator provides a call to the validation of the segment struc
+    against the template.
+    """
+    try:
+        argv = list(args)
+        cls = argv.pop(0)
+        segment = argv.pop(0)
+        template = argv.pop(0)
+        cc = argv.pop(0)
+        serializer = Serializer(cc) if cc else Serializer()
+        validate_segment(segment.elements, template)
+    except MissingFieldsError:
+        serialized_segment = serializer.serialize([segment])
+        msg = u'Some field is missing in segment'
+        return DO_NOTHING, [u'{}: {}'.format(msg, serialized_segment)]
+    except IncorrectValueForField:
+        serialized_segment = serializer.serialize([segment])
+        msg = 'Incorrect value for field in segment'
+        return DO_NOTHING, [u'{}: {}'.format(msg, unicode(serialized_segment))]
+    else:
+        return func(*args)

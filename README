@@ -44,10 +44,38 @@ iter over the segments:
 Or you can create an EDI message:
 
 ```python
+     from edifact.message import Message
      from edifact.segments import Segment
      message = Message()
      message.add_segment(Segment('QTY', ['12', '3']))
      print(message.serialize())
+```
+
+Also you can use a custom Control Chars for read or serialize a message:
+
+
+```python
+     from edifact.message import Message
+     from edifact.control import Characters
+     cc = Characters()
+     cc.data_separator = u'|'
+     cc.segment_terminator = '\n'
+     message = Message.from_file("./tests/data/order.edi", characters=cc)
+     for segment in message.segments:
+         print('Segment tag: {}, content: {}'.format(
+         segment.tag, segment.elements))
+```
+
+```python
+     from edifact.message import Message
+     from edifact.segments import Segment
+     from edifact.control import Characters
+     cc = Characters()
+     cc.data_separator = u'|'
+     cc.segment_terminator = '\n'
+     message = Message()
+     message.add_segment(Segment('QTY', ['12', '3']))
+     print(message.serialize(cc))
 ```
 
 Support
