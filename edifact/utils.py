@@ -32,9 +32,7 @@ def rewind(rewind_iterator):
 
 
 class RewindIterator(object):
-    """
-    Convert a collection or an iterator into a RewindIterator
-    """
+    '''Convert a collection or an iterator into a RewindIterator'''
     def __init__(self, collection):
         self._iter = iter([item for item in collection])
         self._prev = []
@@ -44,8 +42,7 @@ class RewindIterator(object):
         return self
 
     def rewind(self):
-        """Rewinds one position the iterator
-        """
+        '''Rewinds one position the iterator'''
         if self._prev:
             self._next.append(self._prev.pop())
 
@@ -59,9 +56,25 @@ class RewindIterator(object):
 
 
 def separate_section(iterator, start=None, end=None):
-    """
-    Extracts a section from the rest of the message
-    """
+    '''Given an iterator of a message segments and optionally a
+    start message tag or an end message tag it extracts a subset
+    of segments
+
+    Parameters
+    ----------
+
+    iterator : RewindIterator
+        The iterator with the message segments to be splitted
+    start : Segment
+        Start segment of the split
+    end  : Segment
+        Final segment of the split
+
+    Returns
+    -------
+    extracted
+        Segments extracted
+    '''
     if not isinstance(iterator, RewindIterator):
         raise TypeError('Argument iterator must be a RewindIterator.')
 
@@ -87,9 +100,8 @@ def separate_section(iterator, start=None, end=None):
 
 
 def validate_segment(elements, template_segment_elements):
-    """
-    Validate the segment elements against the template
-    """
+    '''Validate the segment elements against the template'''
+
     if len(template_segment_elements) > len(elements):
         raise MissingFieldsError
     for index, item in enumerate(template_segment_elements):
@@ -111,17 +123,17 @@ def validate_segment(elements, template_segment_elements):
 
 @decorator
 def with_segment_check(func, *args):
-    """
-    This decorator provides a call to the validation of the segment struc
+    '''Decorator wich provides a call to the validation of the segment struc
     against the template.
-    """
+    '''
     try:
         argv = list(args)
         cls = argv.pop(0)
         segment = argv.pop(0)
         template = argv.pop(0)
-        cc = argv.pop(0)
-        serializer = Serializer(cc) if cc else Serializer()
+        control_chars = argv.pop(0) if argv else None
+        serializer = Serializer(control_chars) if control_chars \
+            else Serializer()
         validate_segment(segment.elements, template)
     except MissingFieldsError:
         serialized_segment = serializer.serialize([segment])
