@@ -92,7 +92,7 @@ class Tokenizer(object):
     def get_next_char(self):
         u"""Get the next character from the message."""
         try:
-            return self._message.next()
+            return next(self._message)
         except StopIteration:
             return
 

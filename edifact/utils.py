@@ -22,6 +22,7 @@ from __future__ import absolute_import
 from edifact.errors import MissingFieldsError, IncorrectValueForField
 from edifact.serializer import Serializer
 from decorator import decorator
+from builtins import object
 
 NO_ERRORS = None
 DO_NOTHING = None
@@ -46,13 +47,10 @@ class RewindIterator(object):
         if self._prev:
             self._next.append(self._prev.pop())
 
-    def next(self):
+    def __next__(self):
         next_item = self._next.pop(0) if self._next else next(self._iter)
         self._prev.append(next_item)
         return next_item
-
-    def __next__(self):
-        return self.next()
 
 
 def separate_section(iterator, start=None, end=None):
