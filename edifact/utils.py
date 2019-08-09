@@ -75,20 +75,23 @@ def separate_section(iterator, start=None, end=None):
     '''
     if not isinstance(iterator, RewindIterator):
         raise TypeError('Argument iterator must be a RewindIterator.')
-
+    started = False
     extracted = []
     if not start and not end:
         extracted = [segment for segment in iterator]
 
     for segment in iterator:
         if segment.tag == start:
+            started = True
             if extracted:
                 yield extracted
             extracted = []
             extracted.append(segment)
         elif segment.tag != end:
-            extracted.append(segment)
+            if started:
+                extracted.append(segment)
         else:
+            started = False
             yield extracted
             rewind(iterator)
             break
