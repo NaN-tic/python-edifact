@@ -115,7 +115,8 @@ def validate_segment(elements, template_segment_elements):
             # Recursively checks childs
             validate_segment(elements[index], item)
         elif isinstance(item, tuple):
-            if elements[index] not in item:
+            if (elements[index] not in item and '!value' not in item and
+                    elements[index]):
                 raise IncorrectValueForField
         else:
             if elements[index] != item:
