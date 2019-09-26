@@ -21,7 +21,11 @@
 from setuptools import setup, find_packages
 import os
 import sys
-from version import VERSION, LICENSE, WEBSITE
+
+PACKAGE = 'edifact'
+VERSION = '0.1.9'
+LICENSE = 'LGPLv3+'
+WEBSITE = 'http://www.NaN-tic.com/'
 
 
 def read(fname):
