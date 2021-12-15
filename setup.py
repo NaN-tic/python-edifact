@@ -51,7 +51,6 @@ setup(
         },
     install_requires=install_requires,
     packages=find_packages(),
-    use_2to3=True,
     license=LICENSE,
     test_suite='tests',
     classifiers=[
