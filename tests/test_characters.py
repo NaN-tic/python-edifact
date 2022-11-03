@@ -38,7 +38,7 @@ class CharactersTest(unittest.TestCase):
         one = Characters()
         one.component_separator = u'x'
         self.assertEqual(one.component_separator, u'x')
-        self.assertEqual(unicode(one), u"x+,? '")
+        self.assertEqual(str(one), u"x+,? '")
 
 #    def test_wrong_cc_assigning(self):
 #        with self.assertRaises(ValueError):

@@ -76,22 +76,22 @@ class ParserTest(unittest.TestCase):
         # UNA headers are a special parsing task and must be processed
         # correctly.
         tokens = self.parser.parse(u"UNA:+,? 'TEST'")
-        self.assertEqual(tokens.next(), Segment(u'UNA', u":+,? '"))
-        self.assertEqual(tokens.next(), Segment(u'TEST'))
+        self.assertEqual(next(tokens), Segment(u'UNA', u":+,? '"))
+        self.assertEqual(next(tokens), Segment(u'TEST'))
 
     def test_una_parser2(self):
         # UNA headers are a special parsing task and must be processed
         # correctly.
         tokens = self.parser.parse(u"UNA123456TEST6")
-        self.assertEqual(tokens.next(), Segment(u'UNA', u"123456"))
-        self.assertEqual(tokens.next(), Segment(u'TEST'))
+        self.assertEqual(next(tokens), Segment(u'UNA', u"123456"))
+        self.assertEqual(next(tokens), Segment(u'TEST'))
 
     def test_una_parser3(self):
         # UNA headers are a special parsing task and must be processed
         # correctly.
         tokens = self.parser.parse(u"UNA12345'TEST'")
-        self.assertEqual(tokens.next(), Segment(u'UNA', u"12345'"))
-        self.assertEqual(tokens.next(), Segment(u'TEST'))
+        self.assertEqual(next(tokens), Segment(u'UNA', u"12345'"))
+        self.assertEqual(next(tokens), Segment(u'TEST'))
 
     def test_basic1(self):
 
