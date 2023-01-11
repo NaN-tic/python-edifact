@@ -143,7 +143,7 @@ def with_segment_check(func, *args):
         return DO_NOTHING, [u'{}: {}'.format(msg, serialized_segment)]
     except IncorrectValueForField:
         serialized_segment = serializer.serialize([segment])
-        msg = 'Incorrect value for field in segment'
-        return DO_NOTHING, [u'{}: {}'.format(msg, unicode(serialized_segment))]
+        msg = u'Incorrect value for field in segment'
+        return DO_NOTHING, [u'{}: {}'.format(msg, serialized_segment)]
     else:
         return func(*args)

@@ -96,7 +96,7 @@ class TokenizerTest(unittest.TestCase):
         with self.assertRaises(RuntimeError) as cm:
             self._tokenizer.get_tokens(u"TEST", Characters())
         self.assertEqual(
-            unicode(cm.exception), u"Unexpected end of EDI message")
+            str(cm.exception), "Unexpected end of EDI message")
 
 
 if __name__ == u'__main__':
